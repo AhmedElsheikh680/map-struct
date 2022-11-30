@@ -1,6 +1,5 @@
 package net.javaguides.springboot.error;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
 
 import java.time.LocalDateTime;

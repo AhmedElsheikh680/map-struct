@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.javaguides.springboot.dto.UserDTO;
 import net.javaguides.springboot.error.DuplicateRecordException;
 import net.javaguides.springboot.error.RecordNotFoundException;
 import net.javaguides.springboot.mapper.UserMapper;
+import net.javaguides.springboot.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,10 +32,14 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
+//	Logger log = LoggerFactory.getLogger(UserController.class);
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserService userService;
 	private final UserMapper userMapper;
 
 	// get all users
@@ -64,7 +72,10 @@ public class UserController {
 	public User createUser(@RequestBody @Valid User user) {
 		if (!user.getEmail().isEmpty() && user.getEmail() !=null){
 			Optional<User> entity = userRepository.findByEmail(user.getEmail());
+			log.info("User Name Is {} And Email Is {}" ,user.getFirstName(), user.getEmail());
+
 			if (entity.isPresent()){
+				log.error("Email Already Exist!!");
 				throw new DuplicateRecordException("This Email Already Exist!!");
 			} else {
 				User userResponse = userRepository.save(user);
